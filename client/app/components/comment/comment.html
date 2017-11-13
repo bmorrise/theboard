@@ -1,0 +1,22 @@
+<div class="comment-message">
+  <div class="edit-message">
+    <edit ng-if="vm.isEdit(vm.comment)"
+          value="vm.comment.message"
+          on-complete="vm.updateComment()"
+          on-edit="vm.pendingComment()"
+          auto="vm.comment.edit"
+          type="'textarea'"></edit>
+    <img ng-if="vm.isPending(vm.comment)")
+         src="/images/ajax-loader.gif"/>
+  </div>
+  <button ng-click="vm.removeComment()" ng-if="!vm.isPending(vm.comment)">
+    <span class="glyphicon glyphicon-remove"></span>
+  </button>
+  <div style="clear:both"></div>
+</div>
+<div class="votes-container">
+  <div class="votes noselect">
+    <span class="glyphicon glyphicon-thumbs-up" ng-click="vm.addVote()"></span>
+    {{vm.comment.votes}}
+  </div>
+</div>

@@ -1,0 +1,56 @@
+.columns-container {
+  float: left;
+}
+
+.column {
+  margin: 5px;
+}
+
+.columns {
+  padding: 15px;
+  background-color:#fafbf5;
+}
+
+.columns .no-columns {
+   line-height:5;
+   text-align:center;
+}
+
+.no-comments {
+   color:#333333;
+   text-align:center;
+   line-height:5;
+}
+
+.column .title {
+  font-size: 1.2em;
+  text-align: center;
+  padding: 10px 15px;
+  border-top: 1px solid #edf3f4;
+  border-bottom: 1px solid #edf3f4;
+  font-weight: 600;
+}
+
+.column .title button {
+   float:right;
+   width:17px;
+   padding:0px;
+   height:17px;
+   margin:1px 0px 1px 10px;
+}
+
+.column .title .dropdown-container {
+  cursor:pointer;
+  position:relative;
+  float:right;
+  width:17px;
+  padding:0px;
+  height:17px;
+  margin:1px 0px 1px 10px;
+}
+
+.column .title .dropdown-container ul {
+  border:1px solid #cccccc;
+  background-color:#ffffff;
+  position:absolute;
+}

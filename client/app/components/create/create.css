@@ -1,0 +1,29 @@
+.create-dialog {
+  padding: 100px;
+  width: 600px;
+  margin: auto;
+}
+
+.create-dialog input {
+  margin-bottom: 10px;
+  width: 400px;
+  border: 0;
+  color: #212121;
+  border-bottom: 1px solid #cccccc;
+  padding: 0px 0px 10px 0px;
+}
+
+.create-dialog button {
+  background-color: #005DA6;
+  color: #ffffff;
+  padding: 10px 20px;
+  width: 100%;
+}
+
+.create-dialog button:hover {
+  background-color: #0F2B5B;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}

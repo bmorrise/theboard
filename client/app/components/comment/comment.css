@@ -1,0 +1,36 @@
+.comment {
+  box-shadow: 0px 0px 7px #aaaaaa;
+  background-color: #ffffff;
+  padding: 10px;
+  margin-bottom:10px;
+  border-left:3px solid #005DA6;
+  background-color:#fcfcfc;
+}
+
+.comment-message {
+  padding: 5px;
+}
+
+.comment-message .edit-message {
+  float:left;
+  width:calc(100% - 30px);
+  font-weight:600;
+}
+
+.comment-message button {
+   float:right;
+   width:17px;
+   padding:0px;
+   height:17px;
+   margin:1px 0px 1px 10px;
+}
+
+.votes-container {
+  padding:5px 5px 0px 5px;
+}
+
+.votes {
+  cursor: pointer;
+  color:#669ECA;
+  padding:5px;
+}

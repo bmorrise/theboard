@@ -1,0 +1,15 @@
+{
+  "name": "foo",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular": "^1.6.4",
+    "angular-ui-router": "^1.0.3",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "mongoose": "^4.10.6",
+    "require-css": "^0.1.10",
+    "requirejs": "^2.3.3",
+    "requirejs-text": "^2.0.15",
+    "socket.io": "^2.0.3"
+  }
+}

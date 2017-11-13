@@ -1,0 +1,8 @@
+<div class="create-dialog">
+  <h3>Create Retrospective</h3>
+  <br />
+  <input ng-model="retroName" focus ng-keyup="vm.keyUp($event, retroName)" placeholder="Enter retrospective name here"/>
+  <button ng-click="vm.createRetrospective(retroName)">Start</button><br/><br/>
+  <a ui-sref="retros">View All Retros</a>
+</div>
+<div class="footer">theboard.me &copy; 2017</div>

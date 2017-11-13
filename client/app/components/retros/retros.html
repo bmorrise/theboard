@@ -1,0 +1,24 @@
+<div class="container">
+  <h3>Retrospectives</h3>
+  <table class="table table-hover">
+    <tr ng-repeat="retro in vm.retros">
+      <td width="100%"><a ui-sref="retro({id:retro.slug})">{{retro.name}}</a></td>
+      <td style="white-space: nowrap;">
+        <a href="#" ng-click="vm.deleteRetrospective(retro)">
+          <span class="glyphicon glyphicon-trash"></span> Delete
+        </a>
+      </td>
+      <td style="white-space: nowrap;">
+        <a target="_blank" ng-href="/api/retrospectives/{{retro._id}}/csv">
+          <span class="glyphicon glyphicon-download-alt"></span> CSV
+        </a>
+      </td>
+      <td style="white-space: nowrap;">
+        <a target="_blank" ng-href="/api/retrospectives/{{retro._id}}/pdf">
+          <span class="glyphicon glyphicon-download-alt"></span> PDF
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="footer">theboard.me &copy; 2017</div>

@@ -1,0 +1,127 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  background-color: #F9FAF3;
+}
+
+.header {
+  background-color: #005DA6;
+  text-align: left;
+  color:#ffffff;
+  font-size: 18px;
+  line-height:40px;
+  padding-left:10px;
+}
+
+.header input {
+  color: #000000;
+}
+
+.header span {
+  color: #ffffff;
+}
+
+ .header a:hover span {
+   color: #a7a7a7;
+ }
+
+.header button {
+  color:#ffffff;
+  float:right;
+  width:17px;
+  padding:0px;
+  height:17px;
+  margin:1px 10px 1px 10px;
+}
+
+.header button:hover span {
+  color: #ffffff;
+}
+
+.editable .editing span {
+  display: none;
+}
+
+.editable .editing textarea,
+.editable .editing input {
+  display: block;
+  width: 100%;
+}
+
+.editable textarea {
+  height: 75px;
+  width: 100%;
+  font-size: 14px;
+  display: none;
+}
+
+.editable input {
+  font-size: 14px;
+  display: none;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+          supported by Chrome and Opera */
+}
+
+button {
+  background: none;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover span {
+  color: #000000;
+}
+
+button span {
+  color: #5c5c5c;
+}
+
+.dropdown {
+  padding: 5px 0px;
+  border:1px solid #000000;
+  position:absolute;
+  background-color:#ffffff;
+  left: -45px;
+}
+
+.dropdown div {
+  padding: 5px 10px;
+  font-size:.75em;
+}
+
+.dropdown div:hover {
+  background-color: #efefef;
+}
+
+.footer {
+  text-align: center;
+  text-align: center;
+  padding: 10px;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0px;
+  padding: 5px 0px;
+}
+
+ul li {
+  cursor: pointer;
+  white-space: nowrap;
+  padding: 5px 20px;
+  font-size: .75em;
+  text-align: left;
+}
+
+ul li:hover {
+  background-color: #cccccc;
+}

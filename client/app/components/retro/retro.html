@@ -1,0 +1,21 @@
+<div class="header">
+  <a ui-sref="retros">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+  </a>
+  {{::vm.data.name}}
+  <button ng-click="vm.addColumn()">
+    <span class="glyphicon glyphicon glyphicon-plus"></span>
+  </button>
+</div>
+<div class="columns">
+  <div ng-if="vm.data.columns.length==0" class="no-columns">
+    There are no columns
+  </div>
+  <div ng-repeat="column in vm.data.columns"
+       class="columns-container"
+       style="width:{{100/vm.data.columns.length}}%">
+    <column column="column" data="vm.data"></column>
+  </div>
+  <div style="clear: both"></div>
+</div>
+<div class="footer">theboard.me &copy; 2017</div>
