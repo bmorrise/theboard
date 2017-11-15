@@ -26,6 +26,7 @@ define([
 
     if (id) {
       dt.getRetrospective(id).then(function(res) {
+        console.log(res.data);
         vm.data = res.data;
       });
     }

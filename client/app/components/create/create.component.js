@@ -13,9 +13,9 @@ define([
     controller: createController
   };
 
-  createController.$inject = [dataService.name, "$location"];
+  createController.$inject = [dataService.name, "$state"];
 
-  function createController(dt, $location) {
+  function createController(dt, $state) {
     var vm = this;
     vm.createRetrospective = createRetrospective;
     vm.keyUp = keyUp;
@@ -27,18 +27,16 @@ define([
     }
 
     function createRetrospective(name) {
-      dt.createRetrospective(
-        {
-          name: name,
-          columns: [
-            { name: "What went well" },
-            { name: "What can be improved" },
-            { name: "Action items" }
-          ]
-        }
-      ).then(function(res) {
-        $location.path('/retro/' + res.data.slug);
-        vm.data = res.data;
+      dt.createRetrospective({name: name}).then(function(res) {
+        var retrospective = res.data;
+        var columns = [
+          { name: "What went well" },
+          { name: "What can be improved" },
+          { name: "Action items" }
+        ];
+        dt.addColumns(retrospective._id, columns).then(function(res) {
+          $state.go("retro", {id: retrospective.slug});
+        });
       });
     }
   }

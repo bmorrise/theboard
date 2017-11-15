@@ -19,6 +19,9 @@ module.exports = function(app) {
     .post(retrospective.add_a_column)
     .put(retrospective.update_a_column)
 
+  app.route('/api/columns/:retro_id')
+    .post(retrospective.add_columns)
+
   app.route('/api/column/:retro_id/:column_id')
     .delete(retrospective.delete_a_column)
     .post(retrospective.pending_a_column)

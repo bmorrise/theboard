@@ -1,5 +1,7 @@
 var mongoose = require('mongoose'),
-  Retrospective = mongoose.model('Retrospectives');
+  Retrospective = mongoose.model('Retrospective'),
+  Column = mongoose.model('Column'),
+  Comment = mongoose.model('Comment');
 
 exports.read_all_retrospectives = function(req, res) {
   Retrospective.find({}, "name slug", function(err, retrospective) {
@@ -14,6 +16,9 @@ exports.read_a_retrospective = function(req, res) {
     if (err)
       res.send(err);
     res.json(retrospective);
+  }).populate({
+    path: "columns",
+    populate: {path: "comments"}
   });
 }
 
@@ -67,40 +72,43 @@ exports.export_a_retrospective = function(req, res) {
 exports.add_a_comment = function(req, res) {
   var retroId = req.params.retro_id;
   var columnId = req.params.column_id;
-  Retrospective.findById(retroId, function(err, retrospective) {
-    var column = retrospective.columns.id(columnId);
-    var comment = column.comments.create(req.body);
-    column.comments.push(comment);
-    retrospective.save();
-    res.json(comment);
-    var data = {
-      retroId: retroId,
-      columnId: columnId,
-      comment: comment,
-      action: "add"
-    }
-    global.io.emit('update', data);
+  Column.findById(columnId, function(err, column) {
+    var comment = new Comment(req.body);
+    comment._id = new mongoose.Types.ObjectId();
+    comment.save(function(err) {
+      if (err) res.send(err)
+      column.update({$push:{comments:comment}}, function(err) {
+        res.json(comment);
+        var data = {
+          retroId: retroId,
+          columnId: columnId,
+          comment: comment,
+          action: "add"
+        }
+        global.io.emit('update', data);
+      });
+    });
   });
 }
 
 exports.update_a_comment = function(req, res) {
   var retroId = req.params.retro_id;
   var columnId = req.params.column_id;
-  Retrospective.findById(retroId, function(err, retrospective) {
-    var column = retrospective.columns.id(columnId);
-    var comment = column.comments.id(req.body._id);
+  Comment.findById(req.body._id, function(err, comment) {
     comment.message = req.body.message;
     comment.votes = req.body.votes;
     comment.status = req.body.status;
-    retrospective.save();
-    res.json(comment);
-    var data = {
-      retroId: retroId,
-      columnId: columnId,
-      comment: comment,
-      action: "update"
-    }
-    global.io.emit('update', data);
+    comment.save(function(err) {
+      if (err) res.send(err)
+      res.json(comment);
+      var data = {
+        retroId: retroId,
+        columnId: columnId,
+        comment: comment,
+        action: "update"
+      }
+      global.io.emit('update', data);
+    })
   });
 }
 
@@ -108,19 +116,19 @@ exports.pending_a_comment = function(req, res) {
   var retroId = req.params.retro_id;
   var columnId = req.params.column_id;
   var commentId = req.params.comment_id;
-  Retrospective.findById(retroId, function(err, retrospective) {
-    var column = retrospective.columns.id(columnId);
-    var comment = column.comments.id(commentId);
+  Comment.findById(commentId, function(err, comment) {
     comment.status = 'pending';
-    retrospective.save();
-    res.json();
-    var data = {
-      retroId: retroId,
-      columnId: columnId,
-      commentId: commentId,
-      action: "pending"
-    }
-    global.io.emit('update', data);
+    comment.save(function(err) {
+      if (err) res.send(err);
+      res.json(comment);
+      var data = {
+        retroId: retroId,
+        columnId: columnId,
+        commentId: commentId,
+        action: "pending"
+      }
+      global.io.emit('update', data);
+    })
   });
 }
 
@@ -128,19 +136,20 @@ exports.delete_a_comment = function(req, res) {
   var retroId = req.params.retro_id;
   var columnId = req.params.column_id;
   var commentId = req.params.comment_id;
-  Retrospective.findById(retroId, function(err, retrospective) {
-    var column = retrospective.columns.id(columnId);
-    var comment = column.comments.id(commentId);
-    comment.remove();
-    retrospective.save();
-    res.json(comment);
-    var data = {
-      retroId: retroId,
-      columnId: columnId,
-      comment: comment,
-      action: "delete"
-    }
-    global.io.emit('update', data);
+  Column.findById(columnId, function(err, column) {
+    Comment.findById(commentId, function(err, comment) {
+      column.update({$pull:{comments:comment}}, function(err) {
+        comment.remove();
+        res.json(comment);
+        var data = {
+          retroId: retroId,
+          columnId: columnId,
+          comment: comment,
+          action: "delete"
+        }
+        global.io.emit('update', data);
+      });
+    });
   });
 }
 
@@ -148,32 +157,59 @@ exports.delete_a_comment = function(req, res) {
 exports.add_a_column = function(req, res) {
   var retroId = req.params.retro_id;
   Retrospective.findById(retroId, function(err, retrospective) {
-    var column = retrospective.columns.create(req.body);
-    retrospective.columns.push(column);
-    retrospective.save();
-    res.json(column);
-    var data = {
-      retroId: retroId,
-      column: column,
-      action: "add"
-    }
-    global.io.emit('update', data);
+    var column = new Column(req.body);
+    column._id = new mongoose.Types.ObjectId();
+    column.save(function(err) {
+      retrospective.update({$push:{columns:column}}, function(err) {
+        if (err) res.send(err)
+        res.json(column);
+        var data = {
+          retroId: retroId,
+          column: column,
+          action: "add"
+        }
+        global.io.emit('update', data);
+      });
+    });
+  });
+}
+
+/** Manipulate Columns **/
+exports.add_columns = function(req, res) {
+  var retroId = req.params.retro_id;
+  Retrospective.findById(retroId, function(err, retrospective) {
+    var columns = req.body;
+    columns.forEach(function(col, index) {
+      var column = Column(col);
+      column._id = new mongoose.Types.ObjectId();
+      column.save(function(err) {
+        if (err) res.send(err)
+        retrospective.update({$push: {columns: column}}, function(err) {
+          if (err) res.send(err)
+          if (index == columns.length - 1) {
+            res.json(retrospective)
+          }
+        })
+      })
+    });
   });
 }
 
 exports.update_a_column = function(req, res) {
   var retroId = req.params.retro_id;
-  Retrospective.findById(retroId, function(err, retrospective) {
-    var column = retrospective.columns.id(req.body._id);
+  console.log(req.body);
+  Column.findById(req.body._id, function(err, column) {
     column.name = req.body.name;
-    retrospective.save();
-    res.json(column);
-    var data = {
-      retroId: retroId,
-      column: column,
-      action: "update"
-    }
-    global.io.emit('update', data);
+    column.save(function(err) {
+      if (err) res.send(err)
+      res.json(column);
+      var data = {
+        retroId: retroId,
+        column: column,
+        action: "update"
+      }
+      global.io.emit('update', data);
+    });
   });
 }
 
@@ -181,16 +217,22 @@ exports.delete_a_column = function(req, res) {
   var retroId = req.params.retro_id;
   var columnId = req.params.column_id;
   Retrospective.findById(retroId, function(err, retrospective) {
-    var column = retrospective.columns.id(columnId);
-    column.remove();
-    retrospective.save();
-    res.json(column);
-    var data = {
-      retroId: retroId,
-      column: column,
-      action: "delete"
-    }
-    global.io.emit('update', data);
+    Column.findById(columnId, function(err, column) {
+      column.comments.forEach(function(comment) {
+        comment.remove();
+      });
+      retrospective.update({$pull:{columns:column}}, function() {
+        column.remove(function(err) {
+          res.json(column);
+          var data = {
+            retroId: retroId,
+            column: column,
+            action: "delete"
+          }
+          global.io.emit('update', data);
+        });
+      });
+    }).populate("comments");
   });
 }
 

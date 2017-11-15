@@ -19,6 +19,7 @@ define([], function() {
       createRetrospective: createRetrospective,
       updateRetrospective: updateRetrospective,
       addColumn: addColumn,
+      addColumns: addColumns,
       updateColumn: updateColumn,
       deleteColumn: deleteColumn,
       pendingColumn: pendingColumn,
@@ -46,6 +47,10 @@ define([], function() {
 
     function updateRetrospective(id, retrospective) {
       return _httpPost([baseUrl, "retrospectives", id].join("/"), retrospective);
+    }
+
+    function addColumns(retrospectiveId, columns) {
+      return _httpPost([baseUrl, "columns", retrospectiveId].join("/"), columns);
     }
 
     function addColumn(retrospectiveId, column) {
