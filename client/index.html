@@ -4,14 +4,20 @@
   <title>Retrospective Board</title>
   <base href="/">
   <!-- Latest compiled and minified CSS -->
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="scripts/requirejs/require.js"></script>
   <script>
   require.config({
     paths: {
       root: './app/app.module',
       angular: 'scripts/angular/angular.min',
+      animate: 'scripts/angular-animate/angular-animate.min',
       uirouter: 'scripts/angular-ui-router/release/angular-ui-router.min',
       text: 'scripts/requirejs-text/text',
       css: 'scripts/require-css/css.min',
@@ -21,7 +27,10 @@
       angular: {
           exports : 'angular'
       },
-      uirouter: ['angular'],
+      animate: {
+        deps: ['angular']
+      },
+      uirouter: ['angular']
     }
   });
   require(['root'], function(app) {

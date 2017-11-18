@@ -7,6 +7,13 @@ var express = require('express'),
   server = require('http').Server(app),
   io = require('socket.io')(server);
 
+  io.on('connect', function(socket) {
+    socket.on('room', function(room) {
+      console.log("Joining " + room);
+      socket.join(room);
+    });
+  });
+
 global.io = io;
 
 mongoose.Promise = global.Promise;
@@ -18,7 +25,6 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname + '/node_modules'));
 
 require('./routes/retrospective_routes.js')(app);
-require('./socket.io/events.js')(io);
 
 server.listen(port);
 

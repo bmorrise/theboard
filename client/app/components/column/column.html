@@ -1,35 +1,32 @@
 <div class="column">
   <div class="title">
     <div style="float:left">
-      <edit ng-if="vm.column.edit || !vm.column.pending"
+      <edit ng-if="vm.isEdit(vm.column)"
             value="vm.column.name"
             on-complete="vm.updateColumn()"
             on-edit="vm.pendingColumn()"
             auto="vm.column.edit"></edit>
-      <img ng-if="vm.column.pending && !vm.column.edit"
+      <img ng-if="vm.isPending(vm.column)"
            src="/images/ajax-loader.gif"/>
     </div>
     <div class="dropdown-container">
       <span dropdown class="glyphicon glyphicon-option-vertical"></span>
       <ul>
         <li ng-click="vm.removeColumn()">Remove Column</li>
+        <li ng-click="vm.addComment()">Add Comment</li>
       </ul>
     </div>
-    <!-- <button ng-click="vm.addComment()">
-      <span class="glyphicon glyphicon-plus"></span>
-    </button> -->
     <div style="clear:both"></div>
   </div>
-  <div class="comments-container">
-    <button ng-click="vm.addComment()" style="margin:10px">
-      <span class="glyphicon glyphicon-plus"></span>
-      Add New Comment
+  <div class="comments-parent">
+    <div class="comments-container" scrunch ng-class="{'padded':vm.column.comments.length>0}">
+      <div ng-repeat="comment in vm.column.comments" class="comment fadeit">
+        <comment comment="comment" column="vm.column" retrospective="vm.retrospective"/>
+      </div>
+    </div>
+    <button ng-click="vm.addComment()">
+      <i class="fa fa-plus-square-o fa-lg" aria-hidden="true"></i>
+      &nbsp;Add New Comment
     </button>
-    <div ng-repeat="comment in vm.column.comments" class="comment">
-      <comment comment="comment" column="vm.column" data="vm.data"/>
-    </div>
-    <div ng-if="vm.column.comments.length==0" class="no-comments">
-      There are no comments
-    </div>
   </div>
 </div>

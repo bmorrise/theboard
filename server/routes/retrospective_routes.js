@@ -3,6 +3,9 @@
 module.exports = function(app) {
   var retrospective = require('../controllers/retrospective_controller');
 
+  app.route('/api/teams')
+    .get(retrospective.read_all_teams)
+
   app.route('/api/retrospectives')
     .get(retrospective.read_all_retrospectives)
     .post(retrospective.create_a_retrospective)

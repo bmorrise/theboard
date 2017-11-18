@@ -5,6 +5,7 @@
   margin-bottom:10px;
   border-left:3px solid #005DA6;
   background-color:#fcfcfc;
+  border-radius: 3px;
 }
 
 .comment-message {
@@ -15,6 +16,10 @@
   float:left;
   width:calc(100% - 30px);
   font-weight:600;
+}
+
+.comment-message .edit-message span {
+  white-space: pre-wrap;
 }
 
 .comment-message button {
@@ -30,7 +35,10 @@
 }
 
 .votes {
-  cursor: pointer;
   color:#669ECA;
   padding:5px;
+}
+
+.votes>span {
+  cursor: pointer;
 }

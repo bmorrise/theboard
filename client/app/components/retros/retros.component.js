@@ -14,23 +14,33 @@ define([
     controller: retrosController
   };
 
-  retrosController.$inject = [dataService.name, "$location", "$stateParams", "$scope"];
+  retrosController.$inject = [dataService.name, "$state"];
 
-  function retrosController(dt, $location, $stateParams, $scope) {
+  function retrosController(dt, $state) {
     var vm = this;
+    vm.$onInit = onInit;
     vm.deleteRetrospective = deleteRetrospective;
-    dt.getRetrospectives().then(function(res) {
-      vm.retros = res.data;
-    });
+    vm.addRetro = addRetro;
+
+    function onInit() {
+      dt.getRetrospectives().then(function(res) {
+        vm.retros = res.data.sort(function(a, b) {
+          return a.team.name.localeCompare(b.team.name);
+        });
+      });
+    }
 
     function deleteRetrospective(retro) {
       if (confirm("Are you sure you want to delete this retrospective?")) {
         var index = vm.retros.indexOf(retro);
         vm.retros.splice(index, 1);
         dt.deleteRetrospective(retro._id).then(function(res) {
-          console.log("Deleted");
         });
       }
+    }
+
+    function addRetro() {
+      $state.go("home");
     }
   }
 

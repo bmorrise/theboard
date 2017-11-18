@@ -10,9 +10,11 @@ define([
   './app/shared/edit/edit.directive',
   './app/shared/focus/focus.directive',
   './app/shared/dropdown/dropdown.directive',
-  './app/shared/draggable/draggable.directive',
-  'uirouter'
-], function(angular, retroComponent, appConfig, createComponent, columnComponent, commentComponent, retrosComponent, dataService, editDirective, focusDirective, dropdownDirective, draggableDirective) {
+  './app/shared/column/column.directive',
+  './app/service/socket.service',
+  'uirouter',
+  'animate'
+], function(angular, retroComponent, appConfig, createComponent, columnComponent, commentComponent, retrosComponent, dataService, editDirective, focusDirective, dropdownDirective, columnDirective, socketService) {
   'use strict';
 
   var module = {
@@ -25,17 +27,18 @@ define([
   return module;
 
   function activate() {
-    angular.module(module.name, ['ui.router'])
+    angular.module(module.name, ['ui.router', 'ngAnimate'])
       .component(retroComponent.name, retroComponent.options)
       .component(createComponent.name, createComponent.options)
       .component(columnComponent.name, columnComponent.options)
       .component(commentComponent.name, commentComponent.options)
       .component(retrosComponent.name, retrosComponent.options)
       .service(dataService.name, dataService.factory)
+      .service(socketService.name, socketService.factory)
       .directive(editDirective.name, editDirective.options)
       .directive(focusDirective.name, focusDirective.options)
       .directive(dropdownDirective.name, dropdownDirective.options)
-      .directive(draggableDirective.name, draggableDirective.options)
+      .directive(columnDirective.name, columnDirective.options)
       .config(appConfig);
   }
 

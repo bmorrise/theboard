@@ -1,7 +1,7 @@
 body {
   font-family: 'Open Sans', sans-serif;
   font-size: 14px;
-  background-color: #F9FAF3;
+  background-color: #f9f9f9;
 }
 
 .header {
@@ -103,7 +103,11 @@ button span {
 }
 
 .footer {
-  text-align: center;
+  color: #878787;
+  background-color: #1f1f1f;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
   text-align: center;
   padding: 10px;
 }
@@ -124,4 +128,8 @@ ul li {
 
 ul li:hover {
   background-color: #cccccc;
+}
+
+button:focus, input:focus {
+  outline: 0;
 }

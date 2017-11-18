@@ -17,8 +17,15 @@ define([
 
   function createController(dt, $state) {
     var vm = this;
+    vm.$onInit = onInit;
     vm.createRetrospective = createRetrospective;
     vm.keyUp = keyUp;
+    vm.team = "none";
+    function onInit() {
+      dt.getTeams().then(function(res) {
+        vm.teams = res.data;
+      });
+    }
 
     function keyUp(event, name) {
       if (event.keyCode == 13) {
@@ -26,8 +33,8 @@ define([
       }
     }
 
-    function createRetrospective(name) {
-      dt.createRetrospective({name: name}).then(function(res) {
+    function createRetrospective(team, name) {
+      dt.createRetrospective({team:team, name: name}).then(function(res) {
         var retrospective = res.data;
         var columns = [
           { name: "What went well" },

@@ -50,7 +50,11 @@ define([
 
         angular.element(inputElement).on('keydown', function(e) {
           if (e.keyCode == 13) {
-            finish();
+            if (e.shiftKey) {
+              e.value += "\n";
+            } else {
+              finish();
+            }
           }
           reset();
         });

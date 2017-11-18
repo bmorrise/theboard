@@ -1,8 +1,20 @@
 <div class="create-dialog">
   <h3>Create Retrospective</h3>
   <br />
-  <input ng-model="retroName" focus ng-keyup="vm.keyUp($event, retroName)" placeholder="Enter retrospective name here"/>
-  <button ng-click="vm.createRetrospective(retroName)">Start</button><br/><br/>
-  <a ui-sref="retros">View All Retros</a>
+  <form ng-submit="vm.createRetrospective(vm.team, retroName)">
+    <div class="form-group">
+      <select ng-model="vm.team" class="form-control">
+        <option value="none">Select Team</option>
+        <option ng-repeat="team in vm.teams" value="{{team._id}}">{{team.name}}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <input class="form-control" ng-model="retroName" focus placeholder="Retrospective Name"/>
+    </div>
+    <button type="submit">Start</button><br/><br/>
+  </form>
+  <div class="text-center">
+    <a ui-sref="retros">View All Retros</a>
+  </div>
 </div>
 <div class="footer">theboard.me &copy; 2017</div>

@@ -1,8 +1,16 @@
 <div class="container">
   <h3>Retrospectives</h3>
-  <table class="table table-hover">
+  <table class="table table-hover" ng-if="vm.retros.length>0">
+    <thead>
+      <th>Team</th>
+      <th>Name</th>
+      <th>Created</th>
+      <th colspan="3">Actions</th>
+    </thead>
     <tr ng-repeat="retro in vm.retros">
+      <td>{{retro.team.name}}</td>
       <td width="100%"><a ui-sref="retro({id:retro.slug})">{{retro.name}}</a></td>
+      <td style="white-space: nowrap;">{{retro.date | date: "MMMM dd, yyyy"}}</td>
       <td style="white-space: nowrap;">
         <a href="#" ng-click="vm.deleteRetrospective(retro)">
           <span class="glyphicon glyphicon-trash"></span> Delete
@@ -20,5 +28,9 @@
       </td>
     </tr>
   </table>
+  <button ng-click="vm.addRetro()">
+    <i class="fa fa-plus-square-o fa-lg" aria-hidden="true"></i>
+    &nbsp;Add New Retro
+  </button>
 </div>
 <div class="footer">theboard.me &copy; 2017</div>

@@ -13,6 +13,7 @@ define([], function() {
     var baseUrl = "/api";
 
     return {
+      getTeams: getTeams,
       getRetrospectives: getRetrospectives,
       getRetrospective: getRetrospective,
       deleteRetrospective: deleteRetrospective,
@@ -28,6 +29,10 @@ define([], function() {
       deleteComment: deleteComment,
       pendingComment: pendingComment
     };
+
+    function getTeams() {
+      return _httpGet([baseUrl, "teams"].join("/"));
+    }
 
     function getRetrospectives() {
       return _httpGet([baseUrl, "retrospectives"].join("/"));

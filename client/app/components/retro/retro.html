@@ -2,19 +2,20 @@
   <a ui-sref="retros">
     <span class="glyphicon glyphicon-chevron-left"></span>
   </a>
-  {{::vm.data.name}}
+  <span ng-if="vm.retrospective.team">{{vm.retrospective.team.name}} - </span>
+  {{::vm.retrospective.name}}
   <button ng-click="vm.addColumn()">
     <span class="glyphicon glyphicon glyphicon-plus"></span>
   </button>
 </div>
 <div class="columns">
-  <div ng-if="vm.data.columns.length==0" class="no-columns">
+  <div ng-if="vm.retrospective.columns.length==0" class="no-columns">
     There are no columns
   </div>
-  <div ng-repeat="column in vm.data.columns"
+  <div ng-repeat="column in vm.retrospective.columns"
        class="columns-container"
-       style="width:{{100/vm.data.columns.length}}%">
-    <column column="column" data="vm.data"></column>
+       style="width:{{100/vm.retrospective.columns.length}}%">
+    <column column="column" retrospective="vm.retrospective"></column>
   </div>
   <div style="clear: both"></div>
 </div>

@@ -1,9 +1,10 @@
 define([
   'text!./retro.html',
   '../../service/data.service',
+  '../../service/socket.service',
   'socketio',
   'css!./retro.css',
-], function(template, dataService, io) {
+], function(template, dataService, socketService) {
 
   'use strict';
 
@@ -14,60 +15,49 @@ define([
     controller: retroController
   };
 
-  retroController.$inject = [dataService.name, "$location", "$stateParams", "$scope"];
+  retroController.$inject = [dataService.name, socketService.name, "$location", "$stateParams", "$scope"];
 
-  function retroController(dt, $location, $stateParams, $scope) {
+  function retroController(dt, socketService, $location, $stateParams, $scope) {
     var vm = this;
     vm.addColumn = addColumn;
+    vm.author = "anonymous";
 
-    var id = $stateParams.id;
-    var socket = io.connect();
     var addedColumns = [];
-
-    if (id) {
-      dt.getRetrospective(id).then(function(res) {
-        console.log(res.data);
-        vm.data = res.data;
+    if ($stateParams.id) {
+      dt.getRetrospective($stateParams.id).then(function(res) {
+        vm.retrospective = res.data;
+        socketService.join(vm.retrospective._id);
       });
     }
 
-    socket.on('update', function (data) {
-      if (vm.data._id == data.retroId) {
-        if (data.action == "add") {
-          if (data.column) {
-            vm.data.columns.push(data.column);
-            if (addedColumns.indexOf(data.column._id) != -1) {
-              data.column.edit = true;
-            }
-          }
-        }
-        if (data.action == "update") {
-          if (data.column) {
-            var column = getColumn(data.column._id);
-            column.name = data.column.name;
-            column.pending = false;
-          }
-        }
-        if (data.action == "delete") {
-          if (data.column) {
-            var column = getColumn(data.column._id);
-            var index = vm.data.columns.indexOf(column);
-            vm.data.columns.splice(index, 1);
-          }
-        }
-        if (data.action == "pending") {
-          if (!data.commentId) {
-            var column = getColumn(data.columnId);
-            column.pending = true;
-          }
-        }
-        $scope.$apply();
+    socketService.addColumn(function(data) {
+      vm.retrospective.columns.push(data.column);
+      if (addedColumns.indexOf(data.column._id) != -1) {
+        data.column.edit = true;
       }
+      $scope.$apply();
+    });
+    socketService.updateColumn(function(data) {
+      var column = getColumn(data.column._id);
+      column.name = data.column.name;
+      column.status = "complete";
+      $scope.$apply();
+    });
+    socketService.deleteColumn(function(data) {
+      var column = getColumn(data.column._id);
+      var index = vm.retrospective.columns.indexOf(column);
+      vm.retrospective.columns.splice(index, 1);
+      $scope.$apply();
+    });
+    socketService.pendingColumn(function(data) {
+      var column = getColumn(data.columnId);
+      column.status = "pending";
+      $scope.$apply();
     });
 
     function getColumn(columnId) {
-      for (var i = 0; i < vm.data.columns.length; i++) {
-        var column = vm.data.columns[i];
+      for (var i = 0; i < vm.retrospective.columns.length; i++) {
+        var column = vm.retrospective.columns[i];
         if (column._id == columnId) {
           return column;
         }
@@ -77,7 +67,7 @@ define([
 
     /** Manipulate Columns **/
     function addColumn() {
-      dt.addColumn(vm.data._id, {name: "New Column"}).then(function(res) {
+      dt.addColumn(vm.retrospective._id, {name: "New Column", status: "pending"}).then(function(res) {
         var column = getColumn(res.data._id);
         if (column) {
           column.edit = true;

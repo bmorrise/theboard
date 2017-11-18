@@ -1,5 +1,21 @@
+.comments-container {
+  overflow-y: auto;
+}
+
+.padded {
+  padding: 3px;
+}
+
 .columns-container {
   float: left;
+}
+
+.comments-parent button {
+  color: #787878;
+}
+
+.comments-parent button:hover {
+  color: #434343;
 }
 
 .column {
@@ -8,12 +24,15 @@
 
 .columns {
   padding: 15px;
-  background-color:#fafbf5;
 }
 
 .columns .no-columns {
    line-height:5;
    text-align:center;
+}
+
+.comment + .no-comments {
+  display: none;
 }
 
 .no-comments {
@@ -47,10 +66,36 @@
   padding:0px;
   height:17px;
   margin:1px 0px 1px 10px;
+  z-index: 1000;
 }
 
 .column .title .dropdown-container ul {
   border:1px solid #cccccc;
   background-color:#ffffff;
   position:absolute;
+}
+
+.column .comments-parent {
+  background-color: #efefef;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.fadeit {
+  transition:0.5s linear all;
+}
+
+.fadeit.ng-enter {
+  opacity:0;
+}
+
+.fadeit.ng-enter.ng-enter-active {
+  opacity:1;
+}
+
+.fadeit.ng-leave {
+  opacity:1;
+}
+.fadeit.ng-leave.ng-leave-active {
+  opacity:0;
 }

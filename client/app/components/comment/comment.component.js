@@ -8,17 +8,17 @@ define([
   var options = {
     bindings: {
       comment: '=',
-      column: '<',
-      data: '<'
+      retrospective: '<',
+      column: '<'
     },
     controllerAs: "vm",
     template: template,
     controller: commentController
   };
 
-  commentController.$inject = [dataService.name];
+  commentController.$inject = [dataService.name, "$window"];
 
-  function commentController(dt) {
+  function commentController(dt, $window) {
     var vm = this;
     vm.removeComment = removeComment;
     vm.updateComment = updateComment;
@@ -35,18 +35,25 @@ define([
     function updateComment() {
       vm.comment.edit = false;
       vm.comment.status = 'complete';
-      dt.updateComment(vm.data._id, vm.column._id, vm.comment);
+      dt.updateComment(vm.retrospective._id, vm.column._id, vm.comment);
+      _resize();
     }
 
     function pendingComment() {
       vm.comment.edit = true;
-      dt.pendingComment(vm.data._id, vm.column._id, vm.comment._id);
+      dt.pendingComment(vm.retrospective._id, vm.column._id, vm.comment._id);
+      _resize();
     }
 
     function removeComment() {
       if (confirm("Are you sure you want to delete this comment?")) {
-        dt.deleteComment(vm.data._id, vm.column._id, vm.comment._id);
+        dt.deleteComment(vm.retrospective._id, vm.column._id, vm.comment._id);
+        _resize();
       }
+    }
+
+    function _resize() {
+      $window.dispatchEvent(new Event("resize"));      
     }
 
     function isPending(comment) {

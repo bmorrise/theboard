@@ -1,14 +1,34 @@
 var mongoose = require('mongoose'),
+  Team = mongoose.model('Team'),
   Retrospective = mongoose.model('Retrospective'),
   Column = mongoose.model('Column'),
   Comment = mongoose.model('Comment');
 
+// Team.remove({}, function(err) {
+//   [
+//     {name: "R2D2", tag: "r2d2"},
+//     {name: "Ackbar", tag: "ackbar"},
+//   ].forEach(function(team) {
+//     var team = new Team(team);
+//     team._id = new mongoose.Types.ObjectId();
+//     team.save();
+//   });
+// });
+
+exports.read_all_teams = function(req, res) {
+  Team.find({}, function(err, teams) {
+    if (err) res.send(err);
+    res.json(teams);
+  })
+}
+
 exports.read_all_retrospectives = function(req, res) {
-  Retrospective.find({}, "name slug", function(err, retrospective) {
+  Retrospective.find({}, "name team date slug", function(err, retrospectives) {
     if (err)
       res.send(err);
-    res.json(retrospective);
-  });
+    res.json(retrospectives);
+  }).populate("team")
+  .sort("-date")
 }
 
 exports.read_a_retrospective = function(req, res) {
@@ -19,7 +39,7 @@ exports.read_a_retrospective = function(req, res) {
   }).populate({
     path: "columns",
     populate: {path: "comments"}
-  });
+  }).populate("team");
 }
 
 exports.delete_a_retrospective = function(req, res) {
@@ -48,9 +68,9 @@ exports.update_a_retrospective = function(req, res) {
     var data = {
       retroId: req.params.id,
       retrospective: {name: retrospective.name, _id: retrospective._id},
-      action: "update"
+      action: "retrospective.update"
     }
-    global.io.emit('update', data);
+    global.io.to(req.params.id).emit('retrospective.update', data);
   });
 }
 
@@ -66,7 +86,10 @@ exports.export_a_retrospective = function(req, res) {
     setTimeout(function() {
       res.download(filename);
     }, 2000);
-  });
+  }).populate({
+    path: "columns",
+    populate: {path: "comments"}
+  });;
 }
 
 exports.add_a_comment = function(req, res) {
@@ -83,9 +106,9 @@ exports.add_a_comment = function(req, res) {
           retroId: retroId,
           columnId: columnId,
           comment: comment,
-          action: "add"
+          action: "comment.add"
         }
-        global.io.emit('update', data);
+        global.io.to(retroId).emit('comment.add', data);
       });
     });
   });
@@ -105,9 +128,9 @@ exports.update_a_comment = function(req, res) {
         retroId: retroId,
         columnId: columnId,
         comment: comment,
-        action: "update"
+        action: "comment.update"
       }
-      global.io.emit('update', data);
+      global.io.to(retroId).emit('comment.update', data);
     })
   });
 }
@@ -125,9 +148,9 @@ exports.pending_a_comment = function(req, res) {
         retroId: retroId,
         columnId: columnId,
         commentId: commentId,
-        action: "pending"
+        action: "comment.pending"
       }
-      global.io.emit('update', data);
+      global.io.to(retroId).emit('comment.pending', data);
     })
   });
 }
@@ -145,9 +168,9 @@ exports.delete_a_comment = function(req, res) {
           retroId: retroId,
           columnId: columnId,
           comment: comment,
-          action: "delete"
+          action: "comment.delete"
         }
-        global.io.emit('update', data);
+        global.io.to(retroId).emit('comment.delete', data);
       });
     });
   });
@@ -166,9 +189,9 @@ exports.add_a_column = function(req, res) {
         var data = {
           retroId: retroId,
           column: column,
-          action: "add"
+          action: "column.add"
         }
-        global.io.emit('update', data);
+        global.io.to(retroId).emit('column.add', data);
       });
     });
   });
@@ -200,15 +223,16 @@ exports.update_a_column = function(req, res) {
   console.log(req.body);
   Column.findById(req.body._id, function(err, column) {
     column.name = req.body.name;
+    column.status = req.body.status;
     column.save(function(err) {
       if (err) res.send(err)
       res.json(column);
       var data = {
         retroId: retroId,
         column: column,
-        action: "update"
+        action: "column.update"
       }
-      global.io.emit('update', data);
+      global.io.to(retroId).emit('column.update', data);
     });
   });
 }
@@ -227,9 +251,9 @@ exports.delete_a_column = function(req, res) {
           var data = {
             retroId: retroId,
             column: column,
-            action: "delete"
+            action: "column.delete"
           }
-          global.io.emit('update', data);
+          global.io.to(retroId).emit('column.delete', data);
         });
       });
     }).populate("comments");
@@ -239,11 +263,16 @@ exports.delete_a_column = function(req, res) {
 exports.pending_a_column = function(req, res) {
   var retroId = req.params.retro_id;
   var columnId = req.params.column_id;
-  res.json();
-  var data = {
-    retroId: retroId,
-    columnId: columnId,
-    action: "pending"
-  }
-  global.io.emit('update', data);
+  Column.findById(columnId, function(err, column) {
+    column.status = 'pending';
+    column.save(function(err) {
+      res.json(column);
+      var data = {
+        retroId: retroId,
+        columnId: columnId,
+        action: "column.pending"
+      }
+      global.io.to(retroId).emit('column.pending', data);
+    });
+  })
 }
